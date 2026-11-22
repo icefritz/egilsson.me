@@ -17,6 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/theme.js"></script>
 <style>
 /* One narrow column, the shift read top to bottom by clock time; the all-night tasks pinned first, the current block marked "Now". */
 .wrap{display:flex;flex-direction:column;gap:18px}
@@ -75,7 +76,7 @@ section.is-now .sec-head{border-bottom:2px solid var(--accent)}
       <span class="count" id="count">0 of 0 done</span>
       <button class="reset" id="reset" type="button">Reset</button>
     </div>
-    <p class="note" id="note">Tick a task and it tucks away. The list clears itself at noon, before your next shift, and syncs across your devices.</p>
+    <p class="note" id="note">Tick a task and it tucks away. The list clears itself at noon and syncs across devices.</p>
   </header>
   <main id="sections"></main>
 </div>
