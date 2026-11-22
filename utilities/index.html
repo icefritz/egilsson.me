@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Egilsson - Utilities</title>
+<meta name="theme-color" content="#eef1f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1521" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+<link rel="apple-touch-icon" href="../assets/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+h1{margin:0 0 20px;font-family:var(--f-display);font-weight:700;font-size:clamp(30px,6vw,44px);line-height:1.05}
+form{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px 6px 6px 16px;transition:border-color .15s;margin-bottom:34px}
+form:focus-within{border-color:var(--accent)}
+form svg{flex:none;width:18px;height:18px;color:var(--muted)}
+input{flex:1;min-width:0;font:inherit;font-size:16px;color:var(--fg);background:none;border:0;outline:none;padding:10px 0}
+input::placeholder{color:var(--muted)}
+button{font:inherit;font-weight:600;cursor:pointer;border:0;border-radius:10px;padding:10px 18px;background:var(--accent);color:var(--on-accent)}
+button:hover{background:var(--accent-2)}
+h2{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-family:var(--f-mono);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h2::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(118px,auto);gap:10px}
+.grid a{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:3px;padding:16px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(160deg,var(--surface2),var(--surface));text-decoration:none;min-width:0;overflow:hidden;transition:border-color .15s,transform .15s}
+.grid a:hover{border-color:var(--accent);transform:translateY(-2px)}
+.ic{position:absolute;top:14px;left:14px;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+.ic svg{width:19px;height:19px}
+.grid b{font-family:var(--f-display);font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid a.feat{grid-column:span 2;background:linear-gradient(150deg,var(--feat-a),var(--feat-b));border-color:transparent;color:var(--on-feat)}
+.feat .ic{background:rgba(26,18,5,.14);color:var(--on-feat);width:42px;height:42px;border-radius:11px}
+.feat .ic svg{width:23px;height:23px}
+.grid .feat b{font-size:22px;font-weight:700}
+.grid .feat span{color:var(--on-feat);opacity:.7;font-size:13px}
+@media (max-width:560px){
+  .grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:minmax(92px,auto);gap:8px}
+  .grid a{padding:52px 12px 12px}
+  .grid a.feat{padding-top:60px}
+  .ic{top:12px;left:12px;width:30px;height:30px}
+  .ic svg{width:17px;height:17px}
+  .grid b{font-size:15px}
+  .grid a.feat{grid-column:1/-1}
+  .grid .feat b{font-size:19px}
+  button{padding:9px 14px}
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <a class="back" href="../">Egilsson</a>
+  <h1>Utilities</h1>
+  <form action="https://search.brave.com/search" method="get" target="_blank" role="search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input type="search" name="q" placeholder="Search with Brave" aria-label="Search with Brave" autocomplete="off">
+    <button type="submit">Search</button>
+  </form>
+  <section>
+    <h2>Plex Server</h2>
+    <div class="grid">
+      <a class="feat" href="https://whatbox.ca/manage" target="_blank" rel="noopener"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></svg></i><b>Server Management</b><span>Whatbox</span></a>
+      <a href="https://sonarr.egilsson.me/" target="_blank" rel="noopener"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="m9 2 3 4 3-4M8 21h8"/></svg></i><b>Episodes</b><span>Sonarr</span></a>
+      <a href="https://radarr.egilsson.me/" target="_blank" rel="noopener"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 3v18M17 3v18M3 8h4M3 16h4M17 8h4M17 16h4"/></svg></i><b>Movies</b><span>Radarr</span></a>
+      <a href="https://bazarr.egilsson.me/" target="_blank" rel="noopener"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15h4M13 15h4M7 11h10"/></svg></i><b>Subtitles</b><span>Bazarr</span></a>
+      <a href="https://prowlarr.egilsson.me/" target="_blank" rel="noopener"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M4 12h6M4 18h6"/><circle cx="16" cy="15" r="3.5"/><path d="m21 20-2.5-2.5"/></svg></i><b>Indexers</b><span>Prowlarr</span></a>
+      <a href="https://qbittorrent.egilsson.me/" target="_blank" rel="noopener"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></i><b>Torrents</b><span>qBittorrent</span></a>
+      <a href="https://app.plex.tv/" target="_blank" rel="noopener"><i class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg></i><b>Watch Plex</b><span>app.plex.tv</span></a>
+    </div>
+  </section>
+</main>
+</body>
+</html>
