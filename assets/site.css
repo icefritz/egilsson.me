@@ -33,9 +33,12 @@ a{color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 
-/* Theme switch: Auto / Light / Dark, pinned top right on every page */
-.theme-switch{position:fixed;z-index:50;top:max(14px, env(safe-area-inset-top, 0px));right:max(14px, env(safe-area-inset-right, 0px));display:flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
-.theme-switch button{display:grid;place-items:center;width:30px;height:30px;padding:0;border:0;border-radius:999px;background:none;color:var(--muted);cursor:pointer;transition:background .15s,color .15s}
+/* Theme switch: shows the current choice, widens to Auto / Light / Dark on hover, focus or tap */
+.theme-switch{position:fixed;z-index:50;top:max(14px, env(safe-area-inset-top, 0px));right:max(14px, env(safe-area-inset-right, 0px));display:flex;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--surface);box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.theme-switch button{display:grid;place-items:center;width:30px;height:30px;padding:0;border:0;border-radius:999px;background:none;color:var(--muted);cursor:pointer;overflow:hidden;transition:width .2s ease,opacity .15s ease,background .15s,color .15s}
+.theme-switch button:not([aria-pressed="true"]){width:0;opacity:0;pointer-events:none}
+.theme-switch.open button,.theme-switch:has(:focus-visible) button{width:30px;opacity:1;pointer-events:auto}
+@media (hover: hover){.theme-switch:hover button{width:30px;opacity:1;pointer-events:auto}}
 .theme-switch button:hover{color:var(--fg)}
 .theme-switch button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
-.theme-switch svg{width:16px;height:16px}
+.theme-switch svg{flex:none;width:16px;height:16px}

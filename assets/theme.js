@@ -44,7 +44,14 @@
       b.title = LABELS[v];
       b.setAttribute("aria-label", LABELS[v]);
       b.innerHTML = ICONS[v];
-      b.addEventListener("click", function () { save(v); apply(v); sync(); });
+      b.addEventListener("click", function (e) {
+        var hover = window.matchMedia("(hover: hover)").matches;
+        // On touch screens the first tap on the current choice opens the switch.
+        if (!hover && !wrap.classList.contains("open")) { wrap.classList.add("open"); return; }
+        save(v); apply(v); sync();
+        wrap.classList.remove("open");
+        if (e.detail > 0) b.blur();
+      });
       wrap.appendChild(b);
     });
     document.body.appendChild(wrap);
@@ -53,7 +60,10 @@
       wrap.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.theme === cur)); });
     }
     sync();
+    document.addEventListener("click", function (e) { if (!wrap.contains(e.target)) wrap.classList.remove("open"); });
+    // Keep every page in step: other open tabs, and pages restored with the Back button.
     window.addEventListener("storage", function (e) { if (e.key === KEY) { apply(read()); sync(); } });
+    window.addEventListener("pageshow", function () { apply(read()); sync(); });
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build);
