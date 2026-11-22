@@ -1,0 +1,29 @@
+/* egilsson.me: one set of tokens for every page. Deep navy and brass in the dark, paper and bronze in the light. */
+:root{
+  --bg:#eef1f6; --surface:#ffffff; --surface2:#f6f8fb; --fg:#17202e; --fg2:#3a4556; --muted:#5d6878; --line:#d8dee8;
+  --accent:#9a6414; --accent-2:#7e510f; --accent-soft:#f6ead6; --on-accent:#ffffff; --done:#2f7a55;
+  --feat-a:#e8b25d; --feat-b:#c98a2c; --on-feat:#1a1205;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Inter",system-ui,-apple-system,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0f1521; --surface:#172030; --surface2:#1b2638; --fg:#e6eaf1; --fg2:#c3cad6; --muted:#97a2b4; --line:#273246;
+  --accent:#e0a64e; --accent-2:#c98a2c; --accent-soft:#2f2717; --on-accent:#1a1205; --done:#6cc596;
+  color-scheme:dark}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.45;min-height:100vh;min-height:100dvh}
+a{color:inherit}
+.page{max-width:880px;margin:0 auto;
+  padding-top:max(20px, env(safe-area-inset-top, 0px));
+  padding-bottom:max(48px, env(safe-area-inset-bottom, 0px));
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.page.narrow{max-width:640px}
+.back{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:600;font-size:17px;text-decoration:none;color:var(--fg);padding:6px 0;margin-bottom:18px}
+.back::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--accent)}
+.back:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
