@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Egilsson - Checklist</title>
+<meta name="theme-color" content="#eef1f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1521" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+<link rel="apple-touch-icon" href="../assets/icon-180.png">
+<link rel="manifest" href="../checklist/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Checklist">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+/* One narrow column, the shift read top to bottom by clock time; the all-night tasks pinned first, the current block marked "Now". */
+.wrap{display:flex;flex-direction:column;gap:18px}
+header{display:flex;flex-direction:column;gap:10px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1.1;margin:0;text-wrap:balance}
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.progress{flex:1 1 180px;height:8px;border-radius:99px;background:var(--line);overflow:hidden;min-width:0}
+.progress i{display:block;height:100%;width:0;background:var(--done);transition:width .3s}
+.count{font-family:var(--f-mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+button{font:inherit;cursor:pointer;border-radius:8px}
+.reset{border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:7px 12px;font-size:14px;font-weight:500}
+.reset.armed{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.reset:hover{border-color:var(--accent)}
+.reset:focus-visible,.item:focus-visible,.undo:focus-visible,.toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.note{font-size:13px;color:var(--muted);margin:0}
+section{display:flex;flex-direction:column;gap:6px}
+main{display:flex;flex-direction:column;gap:26px}
+.sec-head{display:flex;align-items:baseline;gap:10px;padding-bottom:7px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.time{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;order:3;margin-left:auto}
+h2{font-family:var(--f-display);font-weight:600;font-size:19px;margin:0;min-width:0}
+.left{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pill{font-family:var(--f-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:99px}
+.pill.now{background:var(--accent);color:var(--on-accent)}
+.pill.clear{color:var(--done);padding-left:0}
+section.is-now .sec-head{border-bottom:2px solid var(--accent)}
+.list{display:flex;flex-direction:column;gap:6px;list-style:none;margin:0;padding:0}
+.item{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);color:var(--fg);padding:11px 12px;font-size:15px;transition:border-color .15s,background .15s}
+.item:hover{border-color:var(--accent)}
+.item:hover .box{border-color:var(--accent)}
+.item:active{background:var(--accent-soft)}
+.item.cond-item{background:transparent;border-style:dashed}
+.box{flex:none;width:20px;height:20px;border:2px solid var(--muted);border-radius:6px;margin-top:1px;transition:border-color .15s}
+.item .t{min-width:0;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+.when{font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:1px 8px;border-radius:99px;white-space:nowrap}
+.toggle{align-self:flex-start;background:none;border:0;color:var(--muted);font-size:13px;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+.toggle:hover{color:var(--fg)}
+.donelist{display:flex;flex-direction:column;gap:2px;list-style:none;margin:0;padding:0}
+.undo{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:none;border:0;color:var(--muted);padding:6px 12px;font-size:14px}
+.undo .tx{text-decoration:line-through}
+.undo .chk{color:var(--done);font-weight:600}
+.undo:hover .tx{color:var(--fg)}
+.note.warn{color:var(--accent)}
+.back{margin-bottom:0}
+@media (display-mode: standalone){.back{display:none}}
+</style>
+</head>
+<body>
+<div class="page narrow wrap">
+  <a class="back" href="../">Egilsson</a>
+  <header>
+    <div class="eyebrow" id="shiftLabel">Night shift · 19:30–07:30</div>
+    <h1>Night Shift Checklist</h1>
+    <div class="bar">
+      <div class="progress" aria-hidden="true"><i id="prog"></i></div>
+      <span class="count" id="count">0 of 0 done</span>
+      <button class="reset" id="reset" type="button">Reset</button>
+    </div>
+    <p class="note" id="note">Tick a task and it tucks away. The list clears itself at noon, before your next shift, and syncs across your devices.</p>
+  </header>
+  <main id="sections"></main>
+</div>
+<script>
+const SECTIONS = [
+  {id:"night", time:"19:30–07:30", title:"All night", start:null, items:[
+    ["n1","Answer emails and reach Inbox Zero before the next shift."],
+    ["n2","Note anything the next shift needs to know in the Memo."],
+    ["n3","Add wake-up calls to the system.","If requested"]]},
+  {id:"arrival", time:"19:30", title:"On arrival", start:0, items:[
+    ["a1","Charge the housekeeping phone."],
+    ["a2","Wipe down the printers and refill the paper trays."],
+    ["a3","Check the keys against our records."],
+    ["a4","Run a preliminary financial audit for the day."],
+    ["a5","Make a preliminary breakfast list."],
+    ["a7","Check the departure list and note anything unpaid."],
+    ["r1","Go over the registration forms and add any housekeeping requests."],
+    ["r2","File the registration forms in their folders."],
+    ["r3","Add missing nationalities from the registration forms.","If needed"],
+    ["r4","Empty the registration folder.","If full"],
+    ["a6","Print the group lists.","If a group checks out tomorrow"],
+    ["a8","Close the separators on the balcony rooms.","If windy"],
+    ["a9","Lower the flag.","If it's up"]]},
+  {id:"kitchen", time:"21:00–23:00", title:"Kitchen closes", start:90, items:[
+    ["k1","Pick up the food the kitchen prepped."]]},
+  {id:"quiet", time:"23:00", title:"Quiet hours", start:210, items:[
+    ["q1","Lock away the alcohol."],
+    ["q3","Close and clean the 3rd-floor seating area."],
+    ["q4","Lock the ski storage and the gym."],
+    ["q5","Lock all doors on floors 0 and 1."],
+    ["q2","Turn off the outdoor music.","If it's on"]]},
+  {id:"midnight", time:"00:00", title:"Midnight", start:270, items:[
+    ["m1","Walk the hallways and check the doors are still locked."],
+    ["m4","Gather the receipts."],
+    ["m2","Amend the financial audit.","If needed"],
+    ["m3","Amend the breakfast list.","If needed"],
+    ["r5","Go over any new registration forms.","If needed"]]},
+  {id:"after", time:"01:30", title:"After hours", start:360, items:[
+    ["h1","Lock the lobby doors."],
+    ["h2","Restock the honesty bar."],
+    ["h3","Wipe down the lobby surfaces."]]},
+  {id:"haunting", time:"03:00", title:"Haunting hours", start:450, items:[
+    ["w1","Walk the hallways and check the doors are still locked."]]},
+  {id:"open", time:"05:30", title:"Open for business", start:600, items:[
+    ["o1","Unlock the lobby doors."],
+    ["o2","Straighten the lounge pillows."],
+    ["o3","Pick up trash outside."],
+    ["o4","Empty the lobby trash cans."]]},
+  {id:"morning", time:"06:00", title:"Good morning", start:630, items:[
+    ["g1","Open the 3rd-floor seating area."],
+    ["g2","Unlock the ski storage and the gym."],
+    ["g3","Clean the assistant manager's desk."]]},
+  {id:"breakfast", time:"07:00", title:"Breakfast", start:690, items:[
+    ["b1","Turn on the breakfast music."],
+    ["b2","Light the lobby candles."],
+    ["b3","Raise the flag.","If it's a flag day"]]},
+  {id:"handover", time:"07:30", title:"Shift change", start:720, items:[
+    ["s1","Log in to Kea2 (Godo and Zendesk)."]]}
+];
+const TOTAL = SECTIONS.reduce((n,s)=>n+s.items.length,0);
+const LS_KEY = "nightshift-state";
+const API = "https://script.google.com/macros/s/AKfycbzateRbeqC5L1fVc7R3T1QxXP9bXJllO6yjn9FuaA_Pwe9DvjR2cG8vaB1r2c2gHyJd/exec";
+
+// A shift runs noon to noon, so the date is that of the evening the shift started.
+function shiftKey(d=new Date()){
+  const t = new Date(d.getTime() - 12*3600e3);
+  return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
+}
+function shiftMinutes(d=new Date()){ return ((d.getHours()*60+d.getMinutes()) - 1170 + 1440) % 1440; }
+
+let state = {shift: shiftKey(), done:{}};
+let dbRef = null, readOnly = false, openDone = {};
+
+function current(){ return state.shift === shiftKey() ? state.done : {}; }
+
+function render(){
+  const done = current();
+  const m = shiftMinutes();
+  let nowId = null;
+  if (m <= 750) for (const s of SECTIONS) if (s.start !== null && s.start <= m) nowId = s.id;
+  const host = document.getElementById("sections");
+  host.innerHTML = "";
+  let count = 0;
+  for (const s of SECTIONS){
+    const sec = document.createElement("section");
+    if (s.id === nowId) sec.className = "is-now";
+    const left = s.items.filter(([id]) => !done[id]);
+    const fin = s.items.filter(([id]) => done[id]);
+    count += fin.length;
+    const head = document.createElement("div"); head.className = "sec-head";
+    head.innerHTML = `<h2></h2><span class="time"></span>`;
+    head.querySelector(".time").textContent = s.time;
+    head.querySelector("h2").textContent = s.title;
+    if (s.id === nowId){ const p=document.createElement("span"); p.className="pill now"; p.textContent="Now"; head.append(p); }
+    if (!left.length){ const p=document.createElement("span"); p.className="pill clear"; p.textContent="✓ All done"; head.append(p); }
+    else if (fin.length){ const p=document.createElement("span"); p.className="left"; p.textContent=left.length+" left"; head.append(p); }
+    sec.append(head);
+    if (left.length){
+      const ul = document.createElement("ul"); ul.className = "list";
+      for (const [id, text, cond] of left){
+        const li = document.createElement("li");
+        const b = document.createElement("button"); b.type="button"; b.className="item"; b.disabled = readOnly;
+        b.innerHTML = `<span class="box" aria-hidden="true"></span><span class="t"></span>`;
+        const t = b.querySelector(".t");
+        if (cond){ b.classList.add("cond-item"); const c=document.createElement("span"); c.className="when"; c.textContent=cond; t.append(c); }
+        const tx=document.createElement("span"); tx.textContent=text; t.append(tx);
+        b.setAttribute("aria-label", "Mark done: "+(cond?cond+": ":"")+text);
+        b.onclick = () => toggle(id, true);
+        li.append(b); ul.append(li);
+      }
+      sec.append(ul);
+    }
+    if (fin.length){
+      const t = document.createElement("button"); t.type="button"; t.className="toggle";
+      t.textContent = (openDone[s.id] ? "Hide" : "Show") + " " + fin.length + " done";
+      t.onclick = () => { openDone[s.id] = !openDone[s.id]; render(); };
+      sec.append(t);
+      if (openDone[s.id]){
+        const ul = document.createElement("ul"); ul.className = "donelist";
+        for (const [id, text, cond] of fin){
+          const li = document.createElement("li");
+          const b = document.createElement("button"); b.type="button"; b.className="undo"; b.disabled = readOnly;
+          b.innerHTML = `<span class="chk">✓</span><span class="tx"></span>`;
+          b.lastChild.textContent = (cond ? cond+": " : "") + text;
+          b.title = "Tap to put it back";
+          b.onclick = () => toggle(id, false);
+          li.append(b); ul.append(li);
+        }
+        sec.append(ul);
+      }
+    }
+    host.append(sec);
+  }
+  document.getElementById("count").textContent = count + " of " + TOTAL + " done";
+  document.getElementById("prog").style.width = (count/TOTAL*100) + "%";
+}
+
+// Writes: one at a time, latest state wins. The shared copy lives in the Google Apps Script.
+let writing = false, pending = false, lastJson = "";
+async function save(){
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e){}
+  if (writing){ pending = true; return; }
+  writing = true;
+  const body = JSON.stringify({shift: state.shift, done: state.done});
+  try {
+    const r = await fetch(API, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body});
+    if (r.ok) { lastJson = body; setOffline(false); } else setOffline(true);
+  } catch(e){ setOffline(true); }
+  writing = false;
+  if (pending){ pending = false; save(); }
+}
+function toggle(id, on){
+  const key = shiftKey();
+  const done = state.shift === key ? {...state.done} : {};
+  if (on) done[id] = true; else delete done[id];
+  state = {shift:key, done};
+  render(); save();
+}
+
+const resetBtn = document.getElementById("reset");
+let armTimer = null;
+resetBtn.onclick = () => {
+  if (!resetBtn.classList.contains("armed")){
+    resetBtn.classList.add("armed"); resetBtn.textContent = "Tap again to reset";
+    armTimer = setTimeout(disarm, 4000); return;
+  }
+  disarm();
+  state = {shift: shiftKey(), done:{}}; openDone = {};
+  render(); save();
+};
+function disarm(){ clearTimeout(armTimer); resetBtn.classList.remove("armed"); resetBtn.textContent = "Reset"; }
+
+const note = document.getElementById("note"), noteText = note.textContent;
+function setOffline(off){ note.textContent = off ? "Can't reach the sync service right now. Ticks are kept on this device and will sync when it's back." : noteText; note.classList.toggle("warn", off); }
+
+// Start from this device's copy, then take the shared one and check it every 20 s.
+try { const s = JSON.parse(localStorage.getItem(LS_KEY)); if (s && s.done) state = s; } catch(e){}
+render();
+setInterval(render, 60000);
+
+function apply(s){
+  if (!s || !s.shift) return;
+  const j = JSON.stringify({shift: s.shift, done: s.done || {}});
+  if (j === lastJson) return;
+  lastJson = j;
+  state = {shift: s.shift || shiftKey(), done: {...(s.done||{})}};
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e){}
+  render();
+}
+async function pull(){
+  if (writing || pending) return;
+  try {
+    const r = await fetch(API + "?api=state", {cache:"no-store"});
+    if (!r.ok) throw 0;
+    const s = await r.json();
+    if (!writing && !pending) apply(s);
+    setOffline(false);
+  } catch(e){ setOffline(true); }
+}
+pull();
+setInterval(pull, 20000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) pull(); });
+</script>
+</body>
+</html>
