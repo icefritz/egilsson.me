@@ -1,15 +1,15 @@
-/* egilsson.me theme switch: Auto follows the device, Light and Dark are remembered per browser. */
+/* egilsson.me theme switch: Dark by default; Auto follows the device. The choice is remembered per browser. */
 (function () {
   var KEY = "egilsson-theme";
   var COLORS = { light: "#eef1f6", dark: "#0f1521" };
   var root = document.documentElement;
 
   function read() {
-    try { var v = localStorage.getItem(KEY); return v === "light" || v === "dark" ? v : "auto"; }
-    catch (e) { return "auto"; }
+    try { var v = localStorage.getItem(KEY); return v === "light" || v === "auto" ? v : "dark"; }
+    catch (e) { return "dark"; }
   }
   function save(v) {
-    try { v === "auto" ? localStorage.removeItem(KEY) : localStorage.setItem(KEY, v); } catch (e) {}
+    try { localStorage.setItem(KEY, v); } catch (e) {}
   }
   function apply(v) {
     if (v === "auto") root.removeAttribute("data-theme");
