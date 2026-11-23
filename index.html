@@ -21,7 +21,7 @@ h1{position:relative}
 .dot{font:inherit;color:var(--accent);background:none;border:0;padding:0;margin:0;cursor:pointer;line-height:inherit;display:inline-block;transition:transform .25s ease,color .15s}
 .dot:hover,.dot[aria-expanded="true"]{color:var(--feat-a);transform:rotate(-12deg) scale(1.08)}
 .dot:focus-visible{outline-offset:-0.08em;border-radius:.12em}
-.wx-menu{position:absolute;z-index:40;left:var(--menu-x,auto);right:auto;top:100%;margin-top:10px;display:flex;flex-direction:column;gap:6px;min-width:270px;font-family:var(--f-body);font-size:15px;letter-spacing:0;line-height:1.3;pointer-events:none}
+.wx-menu{position:absolute;z-index:40;left:var(--menu-x,auto);right:auto;top:100%;margin-top:10px;display:flex;flex-direction:column;gap:6px;min-width:310px;font-family:var(--f-body);font-size:15px;letter-spacing:0;line-height:1.3;pointer-events:none}
 .wx-menu-h{font-family:var(--f-mono);font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding:0 4px 2px;opacity:0;transition:opacity .2s}
 .wx-menu button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(160deg,var(--surface2),var(--surface));color:var(--fg);font:inherit;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.35);
   transform-origin:-10px -24px;transform:rotate(-70deg) scale(.6);opacity:0;
@@ -34,7 +34,7 @@ h1{position:relative}
 .wx-menu button[aria-checked="true"] .wx-pin{background:var(--accent);border-color:var(--accent)}
 .wx-mn{font-weight:600;white-space:nowrap}
 .wx-mn em{font-style:normal;font-weight:500;font-size:11px;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:2px 7px;margin-left:4px;vertical-align:1px}
-.wx-menu small{margin-left:auto;font-size:12px;color:var(--muted)}
+.wx-menu small{margin-left:auto;padding-left:10px;font-size:12px;color:var(--muted)}
 .wx-switching{opacity:.55;transition:opacity .2s}
 @media (prefers-reduced-motion: reduce){.wx-menu button{transform:none}}
 p{margin:0;max-width:34em;color:var(--fg2);font-size:clamp(15px,2.2vw,18px)}
