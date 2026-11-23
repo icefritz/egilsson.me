@@ -60,10 +60,11 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
 .intro{display:flex;flex-direction:column;gap:clamp(16px,4vw,30px);min-width:0}
 @media (min-width:1000px){
   .page.home{max-width:1280px;padding-left:max(40px, env(safe-area-inset-left, 0px));padding-right:max(40px, env(safe-area-inset-right, 0px))}
-  .hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:center;column-gap:clamp(40px,5vw,72px)}
+  .hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);grid-template-areas:"intro ." "wx nav";align-content:center;align-items:start;column-gap:clamp(28px,3.5vw,48px);row-gap:clamp(28px,3.5vw,44px)}
+  .intro{grid-area:intro}
+  .wx{grid-area:wx;max-width:none}
+  nav{grid-area:nav;grid-template-columns:1fr;max-width:none}
   h1{font-size:clamp(72px,7.6vw,112px)}
-  nav{max-width:none}
-  .wx{max-width:none}
 }
 </style>
 </head>
@@ -73,11 +74,11 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
     <div class="intro">
     <h1>Egilsson<span>.</span></h1>
     <p>A personal page for hosting and building side projects and hobbies. Above all, it's my own productivity tool and starting point for getting around.</p>
+    </div>
     <nav>
       <a href="utilities/"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><div><b>Utilities</b><small>Search and Plex server</small></div><span class="go">→</span></a>
       <a href="checklist/"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 7 2 2 4-4M4 17l2 2 4-4M14 7h6M14 17h6"/></svg></span><div><b>Checklist</b><small>Night shift tasks</small></div><span class="go">→</span></a>
     </nav>
-    </div>
     <section id="weather" class="wx" aria-label="Weather in Akureyri" aria-busy="true" aria-live="polite"><span class="wx-sub">Loading weather from vedur.is…</span></section>
   </div>
 </main>
