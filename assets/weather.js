@@ -1,15 +1,28 @@
-/* Akureyri weather from the Icelandic Met Office (vedur.is) open XML service.
-   Observations: station 3471, Akureyri - Krossanesbraut. Forecast: same station point.
+/* Weather from the Icelandic Met Office (vedur.is) open XML service: live observations and the
+   station-point forecast for the chosen location (Akureyri by default, picked from the title's dot).
    Times from vedur.is are UTC, which is also Iceland's local time. */
 (function () {
-  var STATION = "3471";
-  var BASE = "https://xmlweather.vedur.is/?op_w=xml&lang=en&view=xml&ids=" + STATION;
-  var OBS_URL = BASE + "&type=obs&params=T;F;FG;D;RH";
-  var FOREC_URL = BASE + "&type=forec";
-  var CACHE_KEY = "egilsson-weather-v1";
+  var LOCATIONS = [
+    { id: "3471", name: "Akureyri", station: "Krossanesbraut" },
+    { id: "4652", name: "Langanes", station: "Miðfjarðarnes" },
+    { id: "1", name: "Reykjavík", station: "Reykjavík" },
+    { id: "6017", name: "Vestmannaeyjar", station: "Stórhöfði" }
+  ];
+  var LOC_KEY = "egilsson-weather-loc";
+  var CACHE_KEY = "egilsson-weather-v2-";
   var REFRESH_MS = 10 * 60 * 1000;
   var root = document.getElementById("weather");
   if (!root) return;
+  var loc = LOCATIONS[0];
+  try { var saved = localStorage.getItem(LOC_KEY); LOCATIONS.forEach(function (l) { if (l.id === saved) loc = l; }); } catch (e) {}
+  function urls(l) {
+    var b = "https://xmlweather.vedur.is/?op_w=xml&lang=en&view=xml&ids=" + l.id;
+    return { obs: b + "&type=obs&params=T;F;FG;D;RH", forec: b + "&type=forec" };
+  }
+  function pageLink(data) {
+    var u = (data && data.link) || "https://en.vedur.is/weather/forecasts/areas/";
+    return u.replace(/^http:/, "https:");
+  }
 
   var DIRS = { N: 0, NNE: 22.5, NE: 45, ENE: 67.5, E: 90, ESE: 112.5, SE: 135, SSE: 157.5, S: 180, SSW: 202.5, SW: 225, WSW: 247.5, W: 270, WNW: 292.5, NW: 315, NNW: 337.5 };
   var DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -58,6 +71,10 @@
     if (!st || txt(st, "err")) return null;
     return { time: txt(st, "time"), T: num(txt(st, "T")), F: num(txt(st, "F")), FG: num(txt(st, "FG")), D: txt(st, "D"), RH: num(txt(st, "RH")) };
   }
+  function parseLink(xml) {
+    var st = xml.getElementsByTagName("station")[0];
+    return st ? txt(st, "link") : "";
+  }
   function parseForec(xml) {
     var list = xml.getElementsByTagName("forecast"), out = [];
     for (var i = 0; i < list.length; i++) {
@@ -95,8 +112,10 @@
     var range = days.reduce(function (r, d) { return [Math.min(r[0], d.lo), Math.max(r[1], d.hi)]; }, [Infinity, -Infinity]);
     var span = Math.max(1, range[1] - range[0]);
 
-    var html = '<div class="wx-head"><div><span class="wx-place">Akureyri</span><span class="wx-sub">' +
-      (obsTime ? "Measured " + hhmm(obsTime) : "Forecast") + ' · <a href="https://en.vedur.is/weather/forecasts/areas/northeast/#group=15&station=' + STATION + '" target="_blank" rel="noopener">vedur.is</a></span></div></div>' +
+    var l = data.loc;
+    var html = '<div class="wx-head"><div><span class="wx-place">' + esc(l.name) + '</span><span class="wx-sub">' +
+      (l.station !== l.name ? esc(l.station) + " · " : "") +
+      (obsTime ? "Measured " + hhmm(obsTime) : "Forecast") + ' · <a href="' + esc(pageLink(data)) + '" target="_blank" rel="noopener">vedur.is</a></span></div></div>' +
       '<div class="wx-now">' + icon(cur.W, "wi wi-big") +
       '<div class="wx-temp">' + (temp == null ? "–" : (Math.round(temp * 10) / 10).toString().replace(/\.0$/, "")) + '<span>°C</span></div>' +
       '<div class="wx-facts"><b>' + esc(cur.W || "–") + '</b>' +
@@ -117,26 +136,95 @@
       }).join("") + "</div>";
     }
     root.innerHTML = html;
+    root.setAttribute("aria-label", "Weather in " + l.name);
     root.removeAttribute("aria-busy");
+    root.classList.remove("wx-switching");
   }
 
+  function readCache(l) {
+    try {
+      var c = JSON.parse(localStorage.getItem(CACHE_KEY + l.id) || "null");
+      if (c && c.forec && Date.now() - c.at < 6 * 3600e3) { c.loc = l; return c; }
+    } catch (e) {}
+    return null;
+  }
+
+  var seq = 0;
   function load() {
+    var l = loc, my = ++seq, u = urls(l);
     var parser = new DOMParser();
-    function get(u) { return fetch(u, { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); }).then(function (t) { return parser.parseFromString(t, "text/xml"); }); }
-    return Promise.all([get(OBS_URL).catch(function () { return null; }), get(FOREC_URL)]).then(function (res) {
-      var data = { obs: res[0] ? parseObs(res[0]) : null, forec: parseForec(res[1]), at: Date.now() };
+    function get(x) { return fetch(x, { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); }).then(function (t) { return parser.parseFromString(t, "text/xml"); }); }
+    return Promise.all([get(u.obs).catch(function () { return null; }), get(u.forec)]).then(function (res) {
+      if (my !== seq) return;
+      var data = { obs: res[0] ? parseObs(res[0]) : null, forec: parseForec(res[1]), link: parseLink(res[1]), at: Date.now() };
       if (!data.forec.length) throw new Error("empty");
-      try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch (e) {}
+      try { localStorage.setItem(CACHE_KEY + l.id, JSON.stringify(data)); } catch (e) {}
+      data.loc = l;
       render(data);
     }).catch(function () {
-      if (!root.querySelector(".wx-now")) root.innerHTML = '<p class="wx-err">Couldn\'t reach vedur.is right now. <a href="https://en.vedur.is/weather/forecasts/areas/northeast/#group=15&station=' + STATION + '" target="_blank" rel="noopener">Open the forecast</a></p>';
+      if (my !== seq) return;
+      root.classList.remove("wx-switching");
+      if (!root.querySelector(".wx-now")) root.innerHTML = '<p class="wx-err">Couldn\'t reach vedur.is right now. <a href="https://en.vedur.is/weather/forecasts/areas/" target="_blank" rel="noopener">Open the forecast</a></p>';
     });
   }
 
-  try {
-    var cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
-    if (cached && cached.forec && Date.now() - cached.at < 6 * 3600e3) render(cached);
-  } catch (e) {}
+  function choose(l) {
+    if (l === loc) return;
+    loc = l;
+    try { localStorage.setItem(LOC_KEY, l.id); } catch (e) {}
+    var c = readCache(l);
+    if (c) render(c);
+    else { root.classList.add("wx-switching"); root.setAttribute("aria-busy", "true"); }
+    load();
+    syncMenu();
+  }
+
+  /* The full stop after "Egilsson" opens the location menu. */
+  var dot = document.getElementById("wx-dot"), menu = null;
+  function syncMenu() {
+    if (!menu) return;
+    menu.querySelectorAll("[role=menuitemradio]").forEach(function (b) { b.setAttribute("aria-checked", String(b.dataset.id === loc.id)); });
+  }
+  function setOpen(open, focusFirst) {
+    if (open) {
+      var h = dot.parentNode, x = Math.min(dot.offsetLeft, Math.max(0, h.clientWidth - menu.offsetWidth));
+      menu.style.setProperty("--menu-x", x + "px");
+    }
+    menu.classList.toggle("open", open);
+    dot.setAttribute("aria-expanded", String(open));
+    if (open && focusFirst) (menu.querySelector("[aria-checked=true]") || menu.querySelector("button")).focus();
+  }
+  if (dot) {
+    menu = document.createElement("div");
+    menu.className = "wx-menu";
+    menu.id = "wx-menu";
+    menu.setAttribute("role", "menu");
+    menu.setAttribute("aria-label", "Weather location");
+    menu.innerHTML = '<span class="wx-menu-h">Weather</span>' + LOCATIONS.map(function (l, i) {
+      return '<button type="button" role="menuitemradio" data-id="' + l.id + '" style="--i:' + i + '"><span class="wx-pin"></span><span class="wx-mn">' + esc(l.name) +
+        (i === 0 ? ' <em>Default</em>' : "") + "</span>" + (l.station !== l.name ? "<small>" + esc(l.station) + "</small>" : "") + "</button>";
+    }).join("");
+    dot.parentNode.appendChild(menu);
+    dot.setAttribute("aria-controls", "wx-menu");
+    syncMenu();
+    dot.addEventListener("click", function (e) { setOpen(!menu.classList.contains("open"), e.detail === 0); });
+    menu.addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-id]");
+      if (!b) return;
+      LOCATIONS.forEach(function (l) { if (l.id === b.dataset.id) choose(l); });
+      setOpen(false);
+      dot.focus();
+    });
+    menu.addEventListener("keydown", function (e) {
+      var items = Array.prototype.slice.call(menu.querySelectorAll("button")), i = items.indexOf(document.activeElement);
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); items[(i + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus(); }
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && menu.classList.contains("open")) { setOpen(false); dot.focus(); } });
+    document.addEventListener("click", function (e) { if (!menu.contains(e.target) && e.target !== dot) setOpen(false); });
+  }
+
+  var first = readCache(loc);
+  if (first) render(first);
   load();
   setInterval(load, REFRESH_MS);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) load(); });

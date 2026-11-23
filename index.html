@@ -17,7 +17,26 @@
 <style>
 .hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;gap:clamp(16px,4vw,30px);padding-block:48px}
 h1{margin:0;font-family:var(--f-display);font-weight:700;font-size:clamp(52px,12vw,112px);line-height:.95;letter-spacing:-.02em}
-h1 span{color:var(--accent)}
+h1{position:relative}
+.dot{font:inherit;color:var(--accent);background:none;border:0;padding:0;margin:0;cursor:pointer;line-height:inherit;display:inline-block;transition:transform .25s ease,color .15s}
+.dot:hover,.dot[aria-expanded="true"]{color:var(--feat-a);transform:rotate(-12deg) scale(1.08)}
+.dot:focus-visible{outline-offset:-0.08em;border-radius:.12em}
+.wx-menu{position:absolute;z-index:40;left:var(--menu-x,auto);right:auto;top:100%;margin-top:10px;display:flex;flex-direction:column;gap:6px;min-width:230px;font-family:var(--f-body);font-size:15px;letter-spacing:0;line-height:1.3;pointer-events:none}
+.wx-menu-h{font-family:var(--f-mono);font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding:0 4px 2px;opacity:0;transition:opacity .2s}
+.wx-menu button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(160deg,var(--surface2),var(--surface));color:var(--fg);font:inherit;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.35);
+  transform-origin:-10px -24px;transform:rotate(-70deg) scale(.6);opacity:0;
+  transition:transform .38s cubic-bezier(.3,1.35,.5,1) calc(var(--i)*45ms),opacity .2s ease calc(var(--i)*45ms),border-color .15s}
+.wx-menu.open{pointer-events:auto}
+.wx-menu.open .wx-menu-h{opacity:1}
+.wx-menu.open button{transform:none;opacity:1}
+.wx-menu button:hover,.wx-menu button:focus-visible{border-color:var(--accent)}
+.wx-pin{flex:none;width:9px;height:9px;border-radius:3px;border:1.5px solid var(--muted)}
+.wx-menu button[aria-checked="true"] .wx-pin{background:var(--accent);border-color:var(--accent)}
+.wx-mn{font-weight:600}
+.wx-mn em{font-style:normal;font-weight:500;font-size:11px;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:2px 7px;margin-left:4px;vertical-align:1px}
+.wx-menu small{margin-left:auto;font-size:12px;color:var(--muted)}
+.wx-switching{opacity:.55;transition:opacity .2s}
+@media (prefers-reduced-motion: reduce){.wx-menu button{transform:none}}
 p{margin:0;max-width:34em;color:var(--fg2);font-size:clamp(15px,2.2vw,18px)}
 nav{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.6vw,14px);max-width:720px}
 nav a{display:flex;align-items:center;gap:14px;padding:clamp(12px,2vw,18px) clamp(14px,2.2vw,20px);background:linear-gradient(160deg,var(--surface2),var(--surface));border:1px solid var(--line);border-radius:14px;text-decoration:none;min-width:0;transition:border-color .15s,transform .15s}
@@ -60,10 +79,9 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
 .intro{display:flex;flex-direction:column;gap:clamp(16px,4vw,30px);min-width:0}
 @media (min-width:1000px){
   .page.home{max-width:1280px;padding-left:max(40px, env(safe-area-inset-left, 0px));padding-right:max(40px, env(safe-area-inset-right, 0px))}
-  .hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);grid-template-areas:"title ." "wx nav" "desc desc";align-content:center;align-items:start;column-gap:clamp(28px,3.5vw,48px);row-gap:clamp(28px,3.5vw,44px)}
+  .hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);grid-template-areas:"title ." "wx nav";align-content:center;align-items:start;column-gap:clamp(28px,3.5vw,48px);row-gap:clamp(28px,3.5vw,44px)}
   .intro{display:contents}
   h1{grid-area:title}
-  .intro p{grid-area:desc;max-width:none}
   .wx{grid-area:wx;max-width:none}
   nav{grid-area:nav;grid-template-columns:1fr;max-width:none}
   h1{font-size:clamp(72px,7.6vw,112px)}
@@ -74,8 +92,7 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
 <main class="page home">
   <div class="hero">
     <div class="intro">
-    <h1>Egilsson<span>.</span></h1>
-    <p>A personal page for hosting and building side projects and hobbies. Above all, it's my own productivity tool and starting point for getting around.</p>
+    <h1>Egilsson<button type="button" id="wx-dot" class="dot" aria-haspopup="menu" aria-expanded="false" aria-label="Choose weather location" title="Weather location">.</button></h1>
     </div>
     <nav>
       <a href="utilities/"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><div><b>Utilities</b><small>Search and Plex server</small></div><span class="go">→</span></a>
