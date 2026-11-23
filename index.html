@@ -44,13 +44,26 @@ h1{position:relative}
   66%{transform:translateY(0);clip-path:ellipse(9px 7px at 19px 50%)}
   100%{transform:none;clip-path:ellipse(240% 240% at 19px 50%)}}
 .wx-menu button:hover,.wx-menu button:focus-visible{border-color:var(--accent)}
+/* Narrow screens: the options are empty containers that fill up as the stream drips past them. */
+.wx-menu.m{left:0;right:0;min-width:0}
+.wx-menu.m .wx-stream{left:var(--sx,50%);z-index:0;height:calc(var(--s,40px) + var(--len,200px));transition:transform .26s cubic-bezier(.55,0,.75,.3) .2s}
+.wx-menu.m.open .wx-stream{transition:transform var(--sd,600ms) cubic-bezier(.35,.1,.6,1)}
+.wx-menu.m button,.wx-menu.m.open button,.wx-menu.m.closing button{animation:none;clip-path:none;transform:none;isolation:isolate;z-index:1;background:transparent;border-color:transparent;box-shadow:none;
+  transition:border-color .2s ease .22s,box-shadow .2s ease}
+.wx-menu.m button::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:linear-gradient(160deg,var(--surface2),var(--surface));box-shadow:inset 0 2px 0 var(--accent);transform:scaleY(0);transform-origin:50% 100%;
+  transition:transform .16s cubic-bezier(.5,0,.75,0) calc((var(--n,4) - 1 - var(--i)) * 35ms),box-shadow .2s}
+.wx-menu.m button>*{opacity:0;transition:opacity .12s}
+.wx-menu.m.open button{border-color:var(--line);box-shadow:0 10px 24px rgba(0,0,0,.35);transition:border-color .12s,box-shadow .3s ease var(--ft,0ms)}
+.wx-menu.m.open button::before{transform:scaleY(1);box-shadow:inset 0 0 0 transparent;transition:transform .24s cubic-bezier(.2,.7,.3,1) var(--ft,0ms),box-shadow .3s ease calc(var(--ft,0ms) + .2s)}
+.wx-menu.m.open button>*{opacity:1;transition:opacity .18s ease calc(var(--ft,0ms) + .12s)}
+.wx-menu.m.open button:hover,.wx-menu.m.open button:focus-visible{border-color:var(--accent)}
 .wx-pin{flex:none;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--muted);background:var(--surface)}
 .wx-menu button[aria-checked="true"] .wx-pin{background:var(--accent);border-color:var(--accent)}
 .wx-mn{font-weight:600;white-space:nowrap}
 .wx-mn em{font-style:normal;font-weight:500;font-size:11px;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:2px 7px;margin-left:4px;vertical-align:1px}
 .wx-menu small{margin-left:auto;padding-left:10px;font-size:12px;color:var(--muted)}
 .wx-switching{opacity:.55;transition:opacity .2s}
-@media (prefers-reduced-motion: reduce){.wx-menu.open button,.wx-menu.closing button{animation:none}.wx-menu.open button{clip-path:none}.wx-stream{display:none}}
+@media (prefers-reduced-motion: reduce){.wx-menu.m *,.wx-menu.m *::before{transition:none!important}.wx-menu.open button,.wx-menu.closing button{animation:none}.wx-menu.open button{clip-path:none}.wx-stream{display:none}}
 p{margin:0;max-width:34em;color:var(--fg2);font-size:clamp(15px,2.2vw,18px)}
 nav{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.6vw,14px);max-width:720px}
 nav a{display:flex;align-items:center;gap:14px;padding:clamp(12px,2vw,18px) clamp(14px,2.2vw,20px);background:linear-gradient(160deg,var(--surface2),var(--surface));border:1px solid var(--line);border-radius:14px;text-decoration:none;min-width:0;transition:border-color .15s,transform .15s}
@@ -115,6 +128,6 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
     </nav>
   </div>
 </main>
-<script src="assets/weather.js?v=4" defer></script>
+<script src="assets/weather.js?v=5" defer></script>
 </body>
 </html>
