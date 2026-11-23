@@ -46,14 +46,15 @@ h1{position:relative}
 .wx-menu button:hover,.wx-menu button:focus-visible{border-color:var(--accent)}
 /* Narrow screens: the options are empty containers that fill up as the stream drips past them. */
 .wx-menu.m{left:0;right:0;min-width:0}
-.wx-menu.m .wx-stream{left:var(--sx,50%);z-index:0;height:calc(var(--s,40px) + var(--len,200px));transition:transform .26s cubic-bezier(.55,0,.75,.3) .2s}
+.wx-menu.m .wx-stream{left:var(--sx,50%);z-index:2;height:calc(var(--s,40px) + var(--len,200px));transition:transform .26s cubic-bezier(.55,0,.75,.3) .2s}
 .wx-menu.m.open .wx-stream{transition:transform var(--sd,600ms) cubic-bezier(.35,.1,.6,1)}
-.wx-menu.m button,.wx-menu.m.open button,.wx-menu.m.closing button{animation:none;clip-path:none;transform:none;isolation:isolate;z-index:1;background:transparent;border-color:transparent;box-shadow:none;
-  transition:border-color .2s ease .22s,box-shadow .2s ease}
+.wx-menu.m button,.wx-menu.m.open button,.wx-menu.m.closing button{animation:none;clip-path:none;transform:none;isolation:isolate;z-index:1;background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-color:transparent;box-shadow:none;opacity:0;
+  transition:border-color .2s ease .22s,box-shadow .2s ease,opacity .18s ease .25s}
 .wx-menu.m button::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:linear-gradient(160deg,var(--surface2),var(--surface));box-shadow:inset 0 2px 0 var(--accent);transform:scaleY(0);transform-origin:50% 100%;
   transition:transform .16s cubic-bezier(.5,0,.75,0) calc((var(--n,4) - 1 - var(--i)) * 35ms),box-shadow .2s}
 .wx-menu.m button>*{opacity:0;transition:opacity .12s}
-.wx-menu.m.open button{border-color:var(--line);box-shadow:0 10px 24px rgba(0,0,0,.35);transition:border-color .12s,box-shadow .3s ease var(--ft,0ms)}
+.wx-menu.m.open button{opacity:1;border-color:var(--line);box-shadow:0 10px 24px rgba(0,0,0,.35);transition:opacity .12s,border-color .12s,box-shadow .3s ease var(--ft,0ms)}
+.wx-menu.m.settled .wx-stream{transform-origin:50% 100%;transform:scaleY(0);transition:transform .22s cubic-bezier(.55,0,.75,.3)}
 .wx-menu.m.open button::before{transform:scaleY(1);box-shadow:inset 0 0 0 transparent;transition:transform .24s cubic-bezier(.2,.7,.3,1) var(--ft,0ms),box-shadow .3s ease calc(var(--ft,0ms) + .2s)}
 .wx-menu.m.open button>*{opacity:1;transition:opacity .18s ease calc(var(--ft,0ms) + .12s)}
 .wx-menu.m.open button:hover,.wx-menu.m.open button:focus-visible{border-color:var(--accent)}
@@ -128,6 +129,6 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
     </nav>
   </div>
 </main>
-<script src="assets/weather.js?v=5" defer></script>
+<script src="assets/weather.js?v=6" defer></script>
 </body>
 </html>

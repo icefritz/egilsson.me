@@ -215,10 +215,11 @@
         menu.style.setProperty("--len", last.offsetTop + last.offsetHeight / 2 + "px");
         btns.forEach(function (b) { b.style.setProperty("--d", s + b.offsetTop + b.offsetHeight / 2 + "px"); });
       }
-      menu.classList.remove("closing");
+      menu.classList.remove("closing", "settled");
       menu.classList.add("open");
+      if (narrow) closeTimer = setTimeout(function () { menu.classList.add("settled"); }, sd + 60);
     } else {
-      menu.classList.remove("open");
+      menu.classList.remove("open", "settled");
       menu.classList.add("closing");
       closeTimer = setTimeout(function () { menu.classList.remove("closing"); }, 600);
     }
