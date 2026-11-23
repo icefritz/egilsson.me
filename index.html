@@ -29,6 +29,34 @@ nav b{display:block;font-family:var(--f-display);font-weight:600;font-size:clamp
 nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .go{margin-left:auto;color:var(--muted);flex:none}
 @media (max-width:440px){nav{grid-template-columns:1fr}}
+.wx{max-width:720px;padding:clamp(16px,2.6vw,22px) clamp(16px,2.8vw,24px);background:linear-gradient(160deg,var(--surface2),var(--surface));border:1px solid var(--line);border-radius:14px;min-height:150px}
+.wx a{color:var(--accent);text-decoration:none}.wx a:hover{text-decoration:underline}
+.wx-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+.wx-place{font-family:var(--f-display);font-weight:600;font-size:clamp(16px,2.4vw,20px);margin-right:10px}
+.wx-sub{font-size:13px;color:var(--muted)}
+.wx-now{display:flex;align-items:center;gap:clamp(12px,2.4vw,20px)}
+.wi{width:24px;height:24px;color:var(--accent);flex:none}
+.wi-big{width:clamp(44px,8vw,58px);height:clamp(44px,8vw,58px)}
+.wx-temp{font-family:var(--f-display);font-weight:700;font-size:clamp(44px,9vw,64px);line-height:1;letter-spacing:-.02em}
+.wx-temp span{font-size:.4em;color:var(--muted);font-weight:600;margin-left:2px;vertical-align:top;position:relative;top:.25em}
+.wx-facts{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:14px;color:var(--fg2)}
+.wx-facts b{font-family:var(--f-display);font-weight:600;font-size:clamp(15px,2.2vw,18px);color:var(--fg)}
+.wx-facts span{display:flex;align-items:center;gap:5px}
+.wdir{width:14px;height:14px;flex:none;color:var(--muted)}
+.wx-hours{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.wx-h{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:13px;color:var(--muted)}
+.wx-h small{font-family:var(--f-mono);font-size:12px}
+.wx-h b{font-weight:600;color:var(--fg);font-size:15px}
+.wx-h span{display:flex;align-items:center;gap:2px;font-size:12px}
+.wx-days{display:flex;flex-direction:column;gap:2px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.wx-d{display:grid;grid-template-columns:72px 24px 34px 1fr 34px 58px;align-items:center;gap:10px;padding:5px 0;font-size:14px}
+.wx-dn{font-weight:600}.wx-dn small{font-weight:400;color:var(--muted);font-size:12px}
+.wx-lo{color:var(--muted);text-align:right}.wx-hi{font-weight:600}
+.wx-bar{position:relative;height:6px;border-radius:99px;background:var(--line)}
+.wx-bar i{position:absolute;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,var(--accent-2),var(--accent))}
+.wx-wind{font-size:12px;color:var(--muted);text-align:right;font-family:var(--f-mono)}
+.wx-err{font-size:14px}
+@media (max-width:560px){.wx-hours{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:14px}.wx-d{grid-template-columns:60px 22px 30px 1fr 30px;gap:8px}.wx-wind{display:none}}
 </style>
 </head>
 <body>
@@ -40,7 +68,9 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
       <a href="utilities/"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><div><b>Utilities</b><small>Search and Plex server</small></div><span class="go">→</span></a>
       <a href="checklist/"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 7 2 2 4-4M4 17l2 2 4-4M14 7h6M14 17h6"/></svg></span><div><b>Checklist</b><small>Night shift tasks</small></div><span class="go">→</span></a>
     </nav>
+    <section id="weather" class="wx" aria-label="Weather in Akureyri" aria-busy="true" aria-live="polite"><span class="wx-sub">Loading weather from vedur.is…</span></section>
   </div>
 </main>
+<script src="assets/weather.js" defer></script>
 </body>
 </html>
