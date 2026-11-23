@@ -42,8 +42,8 @@
   function arrow(d) {
     var deg = DIRS[d];
     if (deg == null) return "";
-    /* Arrow points the way the wind blows to (from + 180). */
-    return '<svg class="wdir" viewBox="0 0 24 24" style="transform:rotate(' + (deg + 180) + 'deg)" aria-hidden="true"><path d="M12 3v17M6 14l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    /* The arrow is drawn pointing down (a north wind); rotating by the bearing gives the way the wind blows to. */
+    return '<svg class="wdir" viewBox="0 0 24 24" style="transform:rotate(' + deg + 'deg)" aria-hidden="true"><path d="M12 3v17M6 14l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function num(s) { var n = parseFloat(String(s).replace(",", ".")); return isNaN(n) ? null : n; }
