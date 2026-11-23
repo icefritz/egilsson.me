@@ -60,8 +60,10 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
 .intro{display:flex;flex-direction:column;gap:clamp(16px,4vw,30px);min-width:0}
 @media (min-width:1000px){
   .page.home{max-width:1280px;padding-left:max(40px, env(safe-area-inset-left, 0px));padding-right:max(40px, env(safe-area-inset-right, 0px))}
-  .hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);grid-template-areas:"intro ." "wx nav";align-content:center;align-items:start;column-gap:clamp(28px,3.5vw,48px);row-gap:clamp(28px,3.5vw,44px)}
-  .intro{grid-area:intro}
+  .hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);grid-template-areas:"title ." "wx nav" "desc desc";align-content:center;align-items:start;column-gap:clamp(28px,3.5vw,48px);row-gap:clamp(28px,3.5vw,44px)}
+  .intro{display:contents}
+  h1{grid-area:title}
+  .intro p{grid-area:desc;max-width:none}
   .wx{grid-area:wx;max-width:none}
   nav{grid-area:nav;grid-template-columns:1fr;max-width:none}
   h1{font-size:clamp(72px,7.6vw,112px)}
