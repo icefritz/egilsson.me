@@ -18,25 +18,39 @@
 .hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;gap:clamp(16px,4vw,30px);padding-block:48px}
 h1{margin:0;font-family:var(--f-display);font-weight:700;font-size:clamp(52px,12vw,112px);line-height:.95;letter-spacing:-.02em}
 h1{position:relative}
-.dot{font:inherit;color:var(--accent);background:none;border:0;padding:0;margin:0;cursor:pointer;line-height:inherit;display:inline-block;transition:transform .25s ease,color .15s}
-.dot:hover,.dot[aria-expanded="true"]{color:var(--feat-a);transform:rotate(-12deg) scale(1.08)}
+.dot{font:inherit;color:var(--accent);background:none;border:0;padding:0;margin:0;cursor:pointer;line-height:inherit;display:inline-block;transform-origin:50% 80%;transition:transform .3s cubic-bezier(.3,1.6,.5,1),color .15s}
+.dot:hover{color:var(--feat-a)}
+.dot[aria-expanded="true"]{color:var(--feat-a);transform:scale(.94,1.08)}
 .dot:focus-visible{outline-offset:-0.08em;border-radius:.12em}
-.wx-menu{position:absolute;z-index:40;left:var(--menu-x,auto);right:auto;top:100%;margin-top:10px;display:flex;flex-direction:column;gap:6px;min-width:310px;font-family:var(--f-body);font-size:15px;letter-spacing:0;line-height:1.3;pointer-events:none}
-.wx-menu-h{font-family:var(--f-mono);font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding:0 4px 2px;opacity:0;transition:opacity .2s}
-.wx-menu button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(160deg,var(--surface2),var(--surface));color:var(--fg);font:inherit;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.35);
-  transform-origin:-10px -24px;transform:rotate(-70deg) scale(.6);opacity:0;
-  transition:transform .38s cubic-bezier(.3,1.35,.5,1) calc(var(--i)*45ms),opacity .2s ease calc(var(--i)*45ms),border-color .15s}
+/* Location menu: a stream drips from the dot, each option slides down it as a drop and then opens out. */
+.wx-menu{position:absolute;z-index:40;left:var(--menu-x,0px);top:100%;margin-top:14px;display:flex;flex-direction:column;gap:8px;min-width:310px;font-family:var(--f-body);font-size:15px;letter-spacing:0;line-height:1.3;pointer-events:none;visibility:hidden}
+.wx-menu.open,.wx-menu.closing{visibility:visible}
 .wx-menu.open{pointer-events:auto}
-.wx-menu.open .wx-menu-h{opacity:1}
-.wx-menu.open button{transform:none;opacity:1}
+.wx-stream{position:absolute;left:18px;top:calc(var(--s,40px) * -1);width:3px;height:calc(var(--s,40px) + var(--len,200px));border-radius:0 0 3px 3px;background:linear-gradient(var(--feat-a),var(--accent));transform-origin:50% 0;transform:scaleY(0);transition:transform .32s cubic-bezier(.55,0,.75,.3) .12s}
+.wx-menu.open .wx-stream{transform:scaleY(1);transition:transform calc(var(--n,4) * 110ms + 140ms) cubic-bezier(.45,.05,.55,.95)}
+.wx-menu button{position:relative;display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(160deg,var(--surface2),var(--surface));color:var(--fg);font:inherit;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.35);clip-path:ellipse(0px 0px at 19px 50%);transition:border-color .15s}
+.wx-menu.open button{animation:wx-drip .62s cubic-bezier(.35,0,.25,1) calc(var(--i) * 110ms + 60ms) both}
+.wx-menu.closing button{animation:wx-drip-back .34s cubic-bezier(.5,0,.75,0) calc((var(--n,4) - 1 - var(--i)) * 50ms) both reverse}
+@keyframes wx-drip{
+  0%{transform:translateY(calc(var(--d,60px) * -1));clip-path:ellipse(0px 0px at 19px 50%)}
+  12%{transform:translateY(calc(var(--d,60px) * -1));clip-path:ellipse(5px 6px at 19px 50%)}
+  55%{transform:translateY(0);clip-path:ellipse(4px 8px at 19px 50%)}
+  66%{transform:translateY(0);clip-path:ellipse(9px 7px at 19px 50%)}
+  100%{transform:none;clip-path:ellipse(240% 240% at 19px 50%)}}
+@keyframes wx-drip-back{
+  0%{transform:translateY(calc(var(--d,60px) * -1));clip-path:ellipse(0px 0px at 19px 50%)}
+  12%{transform:translateY(calc(var(--d,60px) * -1));clip-path:ellipse(5px 6px at 19px 50%)}
+  55%{transform:translateY(0);clip-path:ellipse(4px 8px at 19px 50%)}
+  66%{transform:translateY(0);clip-path:ellipse(9px 7px at 19px 50%)}
+  100%{transform:none;clip-path:ellipse(240% 240% at 19px 50%)}}
 .wx-menu button:hover,.wx-menu button:focus-visible{border-color:var(--accent)}
-.wx-pin{flex:none;width:9px;height:9px;border-radius:3px;border:1.5px solid var(--muted)}
+.wx-pin{flex:none;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--muted);background:var(--surface)}
 .wx-menu button[aria-checked="true"] .wx-pin{background:var(--accent);border-color:var(--accent)}
 .wx-mn{font-weight:600;white-space:nowrap}
 .wx-mn em{font-style:normal;font-weight:500;font-size:11px;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:2px 7px;margin-left:4px;vertical-align:1px}
 .wx-menu small{margin-left:auto;padding-left:10px;font-size:12px;color:var(--muted)}
 .wx-switching{opacity:.55;transition:opacity .2s}
-@media (prefers-reduced-motion: reduce){.wx-menu button{transform:none}}
+@media (prefers-reduced-motion: reduce){.wx-menu.open button,.wx-menu.closing button{animation:none}.wx-menu.open button{clip-path:none}.wx-stream{display:none}}
 p{margin:0;max-width:34em;color:var(--fg2);font-size:clamp(15px,2.2vw,18px)}
 nav{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.6vw,14px);max-width:720px}
 nav a{display:flex;align-items:center;gap:14px;padding:clamp(12px,2vw,18px) clamp(14px,2.2vw,20px);background:linear-gradient(160deg,var(--surface2),var(--surface));border:1px solid var(--line);border-radius:14px;text-decoration:none;min-width:0;transition:border-color .15s,transform .15s}
@@ -101,6 +115,6 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
     </nav>
   </div>
 </main>
-<script src="assets/weather.js?v=3" defer></script>
+<script src="assets/weather.js?v=4" defer></script>
 </body>
 </html>

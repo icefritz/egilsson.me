@@ -185,12 +185,29 @@
     if (!menu) return;
     menu.querySelectorAll("[role=menuitemradio]").forEach(function (b) { b.setAttribute("aria-checked", String(b.dataset.id === loc.id)); });
   }
+  var closeTimer = 0;
+  function isOpen() { return menu.classList.contains("open"); }
   function setOpen(open, focusFirst) {
+    if (open === isOpen()) return;
+    clearTimeout(closeTimer);
     if (open) {
-      var h = dot.parentNode, x = Math.min(dot.offsetLeft, Math.max(0, h.clientWidth - menu.offsetWidth));
+      /* Line the stream (and the option dots on it) up under the centre of the full stop's glyph. */
+      var h = dot.parentNode, hr = h.getBoundingClientRect(), dr = dot.getBoundingClientRect();
+      var cx = dr.left - hr.left + dr.width * 0.5, x = Math.max(0, Math.min(cx - 19, h.clientWidth - menu.offsetWidth));
+      var glyphBottom = dr.top + dr.height * 0.79, menuTop = hr.bottom + 14;
+      var s = Math.max(8, menuTop - glyphBottom), btns = menu.querySelectorAll("button"), last = btns[btns.length - 1];
       menu.style.setProperty("--menu-x", x + "px");
+      menu.style.setProperty("--s", s + "px");
+      menu.style.setProperty("--n", btns.length);
+      menu.style.setProperty("--len", last.offsetTop + last.offsetHeight / 2 + "px");
+      btns.forEach(function (b) { b.style.setProperty("--d", s + b.offsetTop + b.offsetHeight / 2 + "px"); });
+      menu.classList.remove("closing");
+      menu.classList.add("open");
+    } else {
+      menu.classList.remove("open");
+      menu.classList.add("closing");
+      closeTimer = setTimeout(function () { menu.classList.remove("closing"); }, 600);
     }
-    menu.classList.toggle("open", open);
     dot.setAttribute("aria-expanded", String(open));
     if (open && focusFirst) (menu.querySelector("[aria-checked=true]") || menu.querySelector("button")).focus();
   }
@@ -200,14 +217,14 @@
     menu.id = "wx-menu";
     menu.setAttribute("role", "menu");
     menu.setAttribute("aria-label", "Weather location");
-    menu.innerHTML = '<span class="wx-menu-h">Weather</span>' + LOCATIONS.map(function (l, i) {
+    menu.innerHTML = '<span class="wx-stream" aria-hidden="true"></span>' + LOCATIONS.map(function (l, i) {
       return '<button type="button" role="menuitemradio" data-id="' + l.id + '" style="--i:' + i + '"><span class="wx-pin"></span><span class="wx-mn">' + esc(l.name) +
         (i === 0 ? ' <em>Default</em>' : "") + "</span>" + (l.station !== l.name ? "<small>" + esc(l.station) + "</small>" : "") + "</button>";
     }).join("");
     dot.parentNode.appendChild(menu);
     dot.setAttribute("aria-controls", "wx-menu");
     syncMenu();
-    dot.addEventListener("click", function (e) { setOpen(!menu.classList.contains("open"), e.detail === 0); });
+    dot.addEventListener("click", function (e) { setOpen(!isOpen(), e.detail === 0); });
     menu.addEventListener("click", function (e) {
       var b = e.target.closest("button[data-id]");
       if (!b) return;
@@ -219,8 +236,8 @@
       var items = Array.prototype.slice.call(menu.querySelectorAll("button")), i = items.indexOf(document.activeElement);
       if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); items[(i + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus(); }
     });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && menu.classList.contains("open")) { setOpen(false); dot.focus(); } });
-    document.addEventListener("click", function (e) { if (!menu.contains(e.target) && e.target !== dot) setOpen(false); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && isOpen()) { setOpen(false); dot.focus(); } });
+    document.addEventListener("click", function (e) { if (isOpen() && !menu.contains(e.target) && e.target !== dot) setOpen(false); });
   }
 
   var first = readCache(loc);
