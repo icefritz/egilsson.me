@@ -193,7 +193,7 @@
     if (open) {
       /* Line the stream (and the option dots on it) up under the centre of the full stop's glyph. */
       var h = dot.parentNode, hr = h.getBoundingClientRect(), dr = dot.getBoundingClientRect();
-      var cx = dr.left - hr.left + dr.width * 0.5, x = Math.max(0, Math.min(cx - 19, h.clientWidth - menu.offsetWidth));
+      var cx = dr.left - hr.left + dr.width * 0.5, x = Math.max(-hr.left + 8, Math.min(cx - 19, document.documentElement.clientWidth - 12 - hr.left - menu.offsetWidth));
       var glyphBottom = dr.top + dr.height * 0.79, menuTop = hr.bottom + 14;
       var s = Math.max(8, menuTop - glyphBottom), btns = menu.querySelectorAll("button"), last = btns[btns.length - 1];
       menu.style.setProperty("--menu-x", x + "px");
