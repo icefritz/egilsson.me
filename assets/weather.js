@@ -185,44 +185,18 @@
     if (!menu) return;
     menu.querySelectorAll("[role=menuitemradio]").forEach(function (b) { b.setAttribute("aria-checked", String(b.dataset.id === loc.id)); });
   }
-  var closeTimer = 0;
   function isOpen() { return menu.classList.contains("open"); }
   function setOpen(open, focusFirst) {
     if (open === isOpen()) return;
-    clearTimeout(closeTimer);
     if (open) {
-      /* Line the stream up under the centre of the full stop's glyph. If the menu can't hang under the dot
-         (phones), it spans the width instead and the options fill up like containers as the stream passes. */
+      /* Hang the menu under the full stop; if it would run off the screen (phones), span the width instead. */
       var h = dot.parentNode, hr = h.getBoundingClientRect(), dr = dot.getBoundingClientRect();
-      var vw = document.documentElement.clientWidth, cx = dr.left - hr.left + dr.width * 0.5;
-      var narrow = cx - 19 + 310 > vw - 12 - hr.left;
+      var vw = document.documentElement.clientWidth, x = dr.left - hr.left + dr.width * 0.5 - 19;
+      var narrow = x + 310 > vw - 12 - hr.left;
       menu.classList.toggle("m", narrow);
-      var glyphBottom = dr.top + dr.height * 0.79, menuTop = hr.bottom + 14;
-      var s = Math.max(8, menuTop - glyphBottom), btns = menu.querySelectorAll("button"), last = btns[btns.length - 1];
-      menu.style.setProperty("--s", s + "px");
-      menu.style.setProperty("--n", btns.length);
-      if (narrow) {
-        var len = last.offsetTop + last.offsetHeight - 8, total = s + len, sd = 260 + btns.length * 170;
-        menu.style.setProperty("--menu-x", "0px");
-        menu.style.setProperty("--sx", cx - 1.5 + "px");
-        menu.style.setProperty("--len", len + "px");
-        menu.style.setProperty("--sd", sd + "ms");
-        /* Each container starts filling when the stream reaches its floor (the stream eases, so estimate a little early). */
-        btns.forEach(function (b) { b.style.setProperty("--ft", Math.round(Math.pow((s + b.offsetTop + b.offsetHeight - 8) / total, 1.15) * sd * 0.95) + "ms"); });
-      } else {
-        var x = Math.max(-hr.left + 8, Math.min(cx - 19, vw - 12 - hr.left - menu.offsetWidth));
-        menu.style.setProperty("--menu-x", x + "px");
-        menu.style.setProperty("--len", last.offsetTop + last.offsetHeight / 2 + "px");
-        btns.forEach(function (b) { b.style.setProperty("--d", s + b.offsetTop + b.offsetHeight / 2 + "px"); });
-      }
-      menu.classList.remove("closing", "settled");
-      menu.classList.add("open");
-      if (narrow) closeTimer = setTimeout(function () { menu.classList.add("settled"); }, sd + 60);
-    } else {
-      menu.classList.remove("open", "settled");
-      menu.classList.add("closing");
-      closeTimer = setTimeout(function () { menu.classList.remove("closing"); }, 600);
+      menu.style.setProperty("--menu-x", (narrow ? 0 : Math.max(-hr.left + 8, x)) + "px");
     }
+    menu.classList.toggle("open", open);
     dot.setAttribute("aria-expanded", String(open));
     if (open && focusFirst) (menu.querySelector("[aria-checked=true]") || menu.querySelector("button")).focus();
   }
@@ -232,7 +206,7 @@
     menu.id = "wx-menu";
     menu.setAttribute("role", "menu");
     menu.setAttribute("aria-label", "Weather location");
-    menu.innerHTML = '<span class="wx-stream" aria-hidden="true"></span>' + LOCATIONS.map(function (l, i) {
+    menu.innerHTML = LOCATIONS.map(function (l, i) {
       return '<button type="button" role="menuitemradio" data-id="' + l.id + '" style="--i:' + i + '"><span class="wx-pin"></span><span class="wx-mn">' + esc(l.name) +
         (i === 0 ? ' <em>Default</em>' : "") + "</span>" + (l.station !== l.name ? "<small>" + esc(l.station) + "</small>" : "") + "</button>";
     }).join("");
