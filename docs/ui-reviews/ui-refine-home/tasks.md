@@ -30,9 +30,9 @@
 
 ## 7. 検証で出た修正
 
-- [ ] 7.1 `index.html` の `<style>` に `@media (max-width:560px) and (max-height:760px){ .wx-h:nth-child(n+5){display:none} }` を足し、時間別を1行（4時間分）にする。360×740 で、Utilities の題名と Checklist の見出しが初期表示に入ることを確認する
-- [ ] 7.2 `utilities/index.html` の `.grid a` を `flex-direction:column` にし、`align-items:flex-start` で題名の下に説明を置く。`.grid span` の `margin-left:auto` を外す。1440×900 で、題名と説明が近い位置に並ぶことを確認する（ホームの nav と同じ並び）
-- [ ] 7.3 `index.html` の `.wx-menu.m::after` の `opacity:.94` を `opacity:1` にする。390×844 で場所メニューを開き、後ろの天気の文字が透けないことを確認する
+- [x] 7.1 `index.html` の `<style>` に `@media (max-width:560px) and (max-height:760px){ .wx-h:nth-child(n+5){display:none} }` を足し、時間別を1行（4時間分）にする。360×740 で、Utilities の題名と Checklist の見出しが初期表示に入ることを確認する
+- [x] 7.2 `utilities/index.html` の `.grid a` を `flex-direction:column` にし、`align-items:flex-start` で題名の下に説明を置く。`.grid span` の `margin-left:auto` を外す。1440×900 で、題名と説明が近い位置に並ぶことを確認する（ホームの nav と同じ並び）
+- [x] 7.3 `index.html` の `.wx-menu.m::after` の `opacity:.94` を `opacity:1` にする。390×844 で場所メニューを開き、後ろの天気の文字が透けないことを確認する
 
 ## 8. 確認
 
