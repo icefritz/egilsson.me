@@ -6,7 +6,7 @@
     { id: "3471", name: "Akureyri", station: "Krossanesbraut" },
     { id: "4652", name: "Langanes", station: "Miðfjarðarnes" },
     { id: "1", name: "Reykjavík", station: "Reykjavík" },
-    { id: "6017", name: "Vestmannaeyjar", station: "Stórhöfði" }
+    { id: "6015", name: "Vestmannaeyjar", station: "Vestmannaeyjabær" }
   ];
   var LOC_KEY = "egilsson-weather-loc";
   var CACHE_KEY = "egilsson-weather-v2-";
