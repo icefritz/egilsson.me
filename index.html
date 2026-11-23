@@ -27,7 +27,7 @@ h1{position:relative}
 .wx-menu.open{visibility:visible;pointer-events:auto;clip-path:inset(-20px -30px -40px -30px);transition:clip-path .3s cubic-bezier(.2,.8,.3,1),visibility 0s}
 .wx-menu.m{left:0;right:0;min-width:0}
 .wx-menu.m::after{content:"";position:absolute;inset:-10px -6px;z-index:-1;border-radius:18px;background:var(--bg);opacity:.94}
-.wx-menu button{position:relative;display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(160deg,var(--surface2),var(--surface));color:var(--fg);font:inherit;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.35);
+.wx-menu button{position:relative;display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);font:inherit;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.35);
   opacity:0;transform:translateY(-8px);transition:opacity .12s,transform .18s,border-color .15s}
 .wx-menu.open button{opacity:1;transform:none;transition:opacity .2s ease calc(var(--i) * 40ms + 40ms),transform .3s cubic-bezier(.2,.8,.3,1) calc(var(--i) * 40ms),border-color .15s}
 .wx-menu button:hover,.wx-menu button:focus-visible{border-color:var(--accent)}
@@ -39,23 +39,20 @@ h1{position:relative}
 .wx-switching{opacity:.55;transition:opacity .2s}
 @media (prefers-reduced-motion: reduce){.wx-menu,.wx-menu button{transition:none!important}}
 p{margin:0;max-width:34em;color:var(--fg2);font-size:clamp(15px,2.2vw,18px)}
-nav{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.6vw,14px);max-width:720px}
-nav a{display:flex;align-items:center;gap:14px;padding:clamp(12px,2vw,18px) clamp(14px,2.2vw,20px);background:linear-gradient(160deg,var(--surface2),var(--surface));border:1px solid var(--line);border-radius:14px;text-decoration:none;min-width:0;transition:border-color .15s,transform .15s}
-nav a:hover{border-color:var(--accent);transform:translateY(-2px)}
-.ic{flex:none;width:42px;height:42px;border-radius:10px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
-.ic svg{width:22px;height:22px}
+nav{display:flex;flex-direction:column;max-width:720px;border-top:1px solid var(--line)}
+nav a{display:flex;align-items:center;gap:14px;padding:clamp(12px,2vw,16px) 0;border-bottom:1px solid var(--line);color:var(--fg);text-decoration:none;min-width:0;transition:border-color .15s}
+nav a:hover{border-color:var(--accent)}
 nav div{min-width:0}
 nav b{display:block;font-family:var(--f-display);font-weight:600;font-size:clamp(16px,2.4vw,20px)}
 nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .go{margin-left:auto;color:var(--muted);flex:none}
-@media (max-width:440px){nav{grid-template-columns:1fr}}
-.wx{max-width:720px;padding:clamp(16px,2.6vw,22px) clamp(16px,2.8vw,24px);background:linear-gradient(160deg,var(--surface2),var(--surface));border:1px solid var(--line);border-radius:14px;min-height:150px}
+.wx{max-width:720px;padding:clamp(16px,2.6vw,22px) clamp(16px,2.8vw,24px);background:var(--surface);border:1px solid var(--line);border-radius:8px;min-height:150px}
 .wx a{color:var(--accent);text-decoration:none}.wx a:hover{text-decoration:underline}
 .wx-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
 .wx-place{font-family:var(--f-display);font-weight:600;font-size:clamp(16px,2.4vw,20px);margin-right:10px}
 .wx-sub{font-size:13px;color:var(--muted)}
 .wx-now{display:flex;align-items:center;gap:clamp(12px,2.4vw,20px)}
-.wi{width:24px;height:24px;color:var(--accent);flex:none}
+.wi{width:24px;height:24px;color:var(--fg2);flex:none}
 .wi-big{width:clamp(44px,8vw,58px);height:clamp(44px,8vw,58px)}
 .wx-temp{font-family:var(--f-display);font-weight:700;font-size:clamp(44px,9vw,64px);line-height:1;letter-spacing:-.02em}
 .wx-temp span{font-size:.4em;color:var(--muted);font-weight:600;margin-left:2px;vertical-align:top;position:relative;top:.25em}
@@ -73,10 +70,10 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
 .wx-dn{font-weight:600}.wx-dn small{font-weight:400;color:var(--muted);font-size:12px}
 .wx-lo{color:var(--muted);text-align:right}.wx-hi{font-weight:600}
 .wx-bar{position:relative;height:6px;border-radius:99px;background:var(--line)}
-.wx-bar i{position:absolute;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,var(--accent-2),var(--accent))}
+.wx-bar i{position:absolute;top:0;bottom:0;border-radius:99px;background:var(--muted)}
 .wx-wind{font-size:12px;color:var(--muted);text-align:right;font-family:var(--f-mono)}
 .wx-err{font-size:14px}
-@media (max-width:560px){.wx-hours{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:14px}.wx-d{grid-template-columns:60px 22px 30px 1fr 30px;gap:8px}.wx-wind{display:none}}
+@media (max-width:560px){.wx-hours{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:14px}.wx-d{grid-template-columns:76px 22px 30px 1fr 30px;gap:8px}.wx-dn{white-space:nowrap}.wx-d:nth-child(n+5){display:none}.wx-wind{display:none}}
 .intro{display:flex;flex-direction:column;gap:clamp(16px,4vw,30px);min-width:0}
 @media (min-width:1000px){
   .page.home{max-width:1280px;padding-left:max(40px, env(safe-area-inset-left, 0px));padding-right:max(40px, env(safe-area-inset-right, 0px))}
@@ -84,7 +81,7 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
   .intro{display:contents}
   h1{grid-area:title}
   .wx{grid-area:wx;max-width:none}
-  nav{grid-area:nav;grid-template-columns:1fr;max-width:none}
+  nav{grid-area:nav;max-width:none}
   h1{font-size:clamp(72px,7.6vw,112px)}
 }
 </style>
@@ -97,8 +94,8 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
     </div>
     <section id="weather" class="wx" aria-label="Weather in Akureyri" aria-busy="true" aria-live="polite"><span class="wx-sub">Loading weather from vedur.is…</span></section>
     <nav>
-      <a href="utilities/"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><div><b>Utilities</b><small>Search and Plex server</small></div><span class="go">→</span></a>
-      <a href="checklist/"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 7 2 2 4-4M4 17l2 2 4-4M14 7h6M14 17h6"/></svg></span><div><b>Checklist</b><small>Night shift tasks</small></div><span class="go">→</span></a>
+      <a href="utilities/"><div><b>Utilities</b><small>Search and Plex server</small></div><span class="go">→</span></a>
+      <a href="checklist/"><div><b>Checklist</b><small>Night shift tasks</small></div><span class="go">→</span></a>
     </nav>
   </div>
 </main>
