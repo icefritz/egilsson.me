@@ -18,7 +18,7 @@ a{color:inherit}
   padding-left:max(16px, env(safe-area-inset-left, 0px));
   padding-right:max(16px, env(safe-area-inset-right, 0px))}
 .page.narrow{max-width:640px}
-.back{display:inline-flex;align-self:flex-start;align-items:center;gap:9px;font-family:var(--f-display);font-weight:600;font-size:17px;text-decoration:none;color:var(--fg);padding:6px 0;margin-bottom:18px}
+.back{display:inline-flex;align-self:flex-start;align-items:center;gap:9px;font-family:var(--f-display);font-weight:600;font-size:17px;text-decoration:none;color:var(--fg);padding:10px 0;margin-bottom:14px}
 .back svg{width:20px;height:20px;overflow:visible}
 .back .chev{stroke:var(--fg)}
 .back .dash{fill:var(--accent);transition:transform .2s ease}
