@@ -114,8 +114,7 @@
 
     var l = data.loc;
     var html = '<div class="wx-head"><div><span class="wx-place">' + esc(l.name) + '</span><span class="wx-sub">' +
-      (l.station !== l.name ? esc(l.station) + " · " : "") +
-      (obsTime ? "Measured " + hhmm(obsTime) : "Forecast") + ' · <a href="' + esc(pageLink(data)) + '" target="_blank" rel="noopener">vedur.is</a></span></div></div>' +
+      (l.station !== l.name ? esc(l.station) : "") + '</span></div></div>' +
       '<div class="wx-now">' + icon(cur.W, "wi wi-big") +
       '<div class="wx-temp">' + (temp == null ? "–" : (Math.round(temp * 10) / 10).toString().replace(/\.0$/, "")) + '<span>°C</span></div>' +
       '<div class="wx-facts"><b>' + esc(cur.W || "–") + '</b>' +
@@ -124,7 +123,7 @@
 
     if (hours.length) {
       html += '<div class="wx-hours">' + hours.map(function (f) {
-        return '<div class="wx-h"><small>' + hhmm(f.d) + "</small>" + icon(f.W) + "<b>" + deg(f.T) + '</b><span>' + arrow(f.D) + (f.F == null ? "" : f.F) + "</span></div>";
+        return '<div class="wx-h"><small>' + hhmm(f.d) + "</small>" + icon(f.W) + "<b>" + deg(f.T) + '</b><span>' + arrow(f.D) + (f.F == null ? "" : f.F + " m/s") + "</span></div>";
       }).join("") + "</div>";
     }
     if (days.length) {
@@ -135,6 +134,7 @@
           icon(d.W) + '<span class="wx-lo">' + deg(d.lo) + '</span><span class="wx-bar"><i style="left:' + l + "%;width:" + w + '%"></i></span><span class="wx-hi">' + deg(d.hi) + '</span><span class="wx-wind">' + d.F + " m/s</span></div>";
       }).join("") + "</div>";
     }
+    html += '<p class="wx-foot">' + (obsTime ? "Measured " + hhmm(obsTime) : "Forecast") + ' · <a href="' + esc(pageLink(data)) + '" target="_blank" rel="noopener">vedur.is</a></p>';
     root.innerHTML = html;
     root.setAttribute("aria-label", "Weather in " + l.name);
     root.removeAttribute("aria-busy");
@@ -208,7 +208,7 @@
     menu.setAttribute("aria-label", "Weather location");
     menu.innerHTML = LOCATIONS.map(function (l, i) {
       return '<button type="button" role="menuitemradio" data-id="' + l.id + '" style="--i:' + i + '"><span class="wx-pin"></span><span class="wx-mn">' + esc(l.name) +
-        (i === 0 ? ' <em>Default</em>' : "") + "</span>" + (l.station !== l.name ? "<small>" + esc(l.station) + "</small>" : "") + "</button>";
+        (i === 0 ? ' <em>(default)</em>' : "") + "</span>" + (l.station !== l.name ? "<small>" + esc(l.station) + "</small>" : "") + "</button>";
     }).join("");
     dot.parentNode.appendChild(menu);
     dot.setAttribute("aria-controls", "wx-menu");

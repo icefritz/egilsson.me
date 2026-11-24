@@ -29,6 +29,8 @@
 - 補助テキスト（時刻・件数・見出しの注記）は13px以上にする（ui-refine-checklist）
 - 操作の説明は、ホバーの吹き出しではなく画面の文字で示す（ui-refine-checklist）
 - 外部リンクは、行き先のホスト名を灰色の文字で示す（ui-refine-utilities）
+- 既定の印は、ブランド色のバッジではなく灰色の小さな文字で示す（ui-refine-home-2）
+- 選択メニューは項目ごとに箱を作らず、面1つの中の1pxの罫線で区切る（ui-refine-home-2）
 - 一覧の幅は640pxを上限にする（ui-refine-utilities）
 - 説明文は初回だけ見せ、以後は隠す。警告やエラーは常に見せる（ui-refine-checklist）
 
