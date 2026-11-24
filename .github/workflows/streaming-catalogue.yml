@@ -1,0 +1,37 @@
+name: Refresh streaming catalogue
+
+on:
+  schedule:
+    - cron: "17 4 * * 1" # weekly, Mondays 04:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: streaming-catalogue
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch catalogue from TMDB
+        env:
+          TMDB_TOKEN: ${{ secrets.TMDB_TOKEN }}
+        run: python3 scripts/fetch_streaming.py
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- streaming/catalogue.json; then
+            echo "No change."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add streaming/catalogue.json
+          git commit -m "Refresh streaming catalogue"
+          git push
