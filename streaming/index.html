@@ -108,7 +108,7 @@ select:hover{border-color:var(--muted)}
 
   <div class="foot">
     <p id="updated"></p>
-    <p>Availability from <a href="https://www.justwatch.com/is" target="_blank" rel="noopener">JustWatch</a> via the <a href="https://www.themoviedb.org/" target="_blank" rel="noopener">TMDB</a> API. This site uses the TMDB API but is not endorsed or certified by TMDB. Disney+ and Apple TV+ have no Iceland listings there, so the Danish catalogue stands in; Dropout is the same worldwide.</p>
+    <p>Availability from <a href="https://www.justwatch.com/is" target="_blank" rel="noopener">JustWatch</a> via the <a href="https://www.themoviedb.org/" target="_blank" rel="noopener">TMDB</a> API. This site uses the TMDB API but is not endorsed or certified by TMDB. TMDB's Iceland listings are incomplete for HBO Max, Disney+, Apple TV+ and Crunchyroll, so titles those services carry in at least three of Denmark, Norway, Sweden and Finland are added and marked "Nordic". Netflix, Prime Video and Viaplay use Iceland listings only. Dropout is the same worldwide.</p>
   </div>
 </main>
 <script>
@@ -188,7 +188,7 @@ select:hover{border-color:var(--muted)}
       meta.appendChild(star);
     }
     const on = document.createElement("span"); on.className = "on";
-    on.textContent = t.s.map(s => names[s]).join(" · ");
+    on.textContent = t.s.map(s => names[s] + (t.n && t.n.includes(s) ? " (Nordic)" : "")).join(" · ");
     info.append(tt, meta, on);
     a.append(ph, info); li.append(a);
     return li;
@@ -222,7 +222,7 @@ select:hover{border-color:var(--muted)}
 
   function build() {
     for (const s of D.services) names[s.key] = s.name;
-    const note = { DK: "Nordic", global: "Global" };
+    const note = { nordic: "Nordic", "IS+nordic": "+ Nordic", global: "Global" };
     for (const s of D.services) {
       const b = document.createElement("button");
       b.type = "button"; b.dataset.s = s.key; b.setAttribute("aria-pressed", "false");

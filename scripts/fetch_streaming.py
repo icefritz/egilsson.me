@@ -6,9 +6,12 @@ Needs a TMDB API Read Access Token (or a v3 API key) in the TMDB_TOKEN environme
 
     TMDB_TOKEN=... python3 scripts/fetch_streaming.py
 
-Gaps in TMDB's Iceland data are filled like this:
-  - Disney+ and Apple TV+ have no Iceland listings on TMDB, so the Danish catalogue is used
-    (the Nordic catalogues are effectively identical).
+Gaps in TMDB's Iceland data are filled from the other Nordic countries (DK, NO, SE, FI):
+  - Disney+ and Apple TV+ have no Iceland listings on TMDB at all, and HBO Max and Crunchyroll
+    are clearly incomplete there. For these, a title counts if TMDB lists it on that service in
+    Iceland, or in at least 3 of the 4 Nordic countries. Titles only seen in the Nordics are
+    marked (key "n") so the page can label them.
+  - Netflix, Prime Video and Viaplay catalogues differ by country, so they use Iceland data only.
   - Dropout is not a TMDB provider; its catalogue is the same worldwide, so it is built from
     TMDB's Dropout network (shows) and Dropout company (specials released since its 2018 launch).
 """
@@ -27,16 +30,18 @@ API = "https://api.themoviedb.org/3"
 TOKEN = os.environ.get("TMDB_TOKEN", "").strip()
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "streaming", "catalogue.json")
 
-# key, display name, TMDB provider id, region the data comes from
+# key, display name, TMDB provider id, whether to fill gaps from the Nordic catalogues
 SERVICES = [
-    ("netflix", "Netflix", 8, "IS"),
-    ("prime", "Prime Video", 119, "IS"),
-    ("hbo", "HBO Max", 1899, "IS"),
-    ("disney", "Disney+", 337, "DK"),
-    ("viaplay", "Viaplay", 76, "IS"),
-    ("apple", "Apple TV+", 350, "DK"),
-    ("crunchyroll", "Crunchyroll", 283, "IS"),
+    ("netflix", "Netflix", 8, False),
+    ("prime", "Prime Video", 119, False),
+    ("hbo", "HBO Max", 1899, True),
+    ("disney", "Disney+", 337, True),
+    ("viaplay", "Viaplay", 76, False),
+    ("apple", "Apple TV+", 350, True),
+    ("crunchyroll", "Crunchyroll", 283, True),
 ]
+NORDIC = ("DK", "NO", "SE", "FI")
+NORDIC_MIN = 3  # a Nordic-only title needs to be listed in at least this many of NORDIC
 
 DROPOUT_NETWORK = 4551
 DROPOUT_COMPANY = 216446
@@ -98,27 +103,42 @@ def main():
 
     titles = {}  # (kind letter, id) -> entry with "s": [service keys]
 
-    def add(kind, r, key):
+    def add(kind, r, key, nordic=False):
         e = entry(kind, r)
         cur = titles.setdefault((e["k"], e["id"]), e)
         cur.setdefault("s", [])
         if key not in cur["s"]:
             cur["s"].append(key)
+            if nordic:
+                cur.setdefault("n", []).append(key)
 
-    counts = {}
     with ThreadPoolExecutor(max_workers=8) as pool:
-        for key, name, pid, region in SERVICES:
-            n = 0
+        def fetch_all(kind, pid, region):
+            first = discover(kind, pid, region, 1)
+            pages = min(first.get("total_pages") or 1, 500)  # TMDB stops at page 500
+            rest = pool.map(lambda p: discover(kind, pid, region, p), range(2, pages + 1))
+            return [r for res in [first, *rest] for r in res.get("results", [])]
+
+        for key, name, pid, fill in SERVICES:
+            n_is = n_nordic = 0
             for kind in ("movie", "tv"):
-                first = discover(kind, pid, region, 1)
-                pages = min(first.get("total_pages") or 1, 500)  # TMDB stops at page 500
-                results = [first] + list(pool.map(lambda p: discover(kind, pid, region, p), range(2, pages + 1)))
-                for res in results:
-                    for r in res.get("results", []):
-                        add(kind, r, key)
-                        n += 1
-            counts[key] = n
-            print(f"{name:12} {region}  {n} titles", file=sys.stderr)
+                local = fetch_all(kind, pid, "IS")
+                for r in local:
+                    add(kind, r, key)
+                n_is += len(local)
+                if not fill:
+                    continue
+                seen, rows = {}, {}
+                for region in NORDIC:
+                    for r in fetch_all(kind, pid, region):
+                        seen[r["id"]] = seen.get(r["id"], 0) + 1
+                        rows[r["id"]] = r
+                local_ids = {r["id"] for r in local}
+                for tid, c in seen.items():
+                    if c >= NORDIC_MIN and tid not in local_ids:
+                        add(kind, rows[tid], key, nordic=True)
+                        n_nordic += 1
+            print(f"{name:12} Iceland {n_is:6}  + Nordic {n_nordic:6}", file=sys.stderr)
 
     n = 0
     for kind, flt in (("tv", {"with_networks": DROPOUT_NETWORK}),
@@ -137,13 +157,17 @@ def main():
     for e in items:
         if e["o"] == e["t"]:
             del e["o"]
+    def svc(k, nm, fill):
+        count = sum(1 for e in items if k in e["s"])
+        nordic = sum(1 for e in items if k in e.get("n", ()))
+        region = "IS" if not nordic else "nordic" if nordic == count else "IS+nordic"
+        return {"key": k, "name": nm, "region": region, "count": count, "nordic": nordic}
+
     out = {
         "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
-        "services": [
-            {"key": k, "name": nm, "region": rg, "count": sum(1 for e in items if k in e["s"])}
-            for k, nm, _, rg in SERVICES
-        ] + [{"key": "dropout", "name": "Dropout", "region": "global",
-              "count": sum(1 for e in items if "dropout" in e["s"])}],
+        "services": [svc(k, nm, fill) for k, nm, _, fill in SERVICES]
+        + [{"key": "dropout", "name": "Dropout", "region": "global", "nordic": 0,
+            "count": sum(1 for e in items if "dropout" in e["s"])}],
         "genres": {str(k): v for k, v in sorted(GENRES.items())},
         "titles": items,
     }
