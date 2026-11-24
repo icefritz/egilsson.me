@@ -7,11 +7,12 @@ Needs a TMDB API Read Access Token (or a v3 API key) in the TMDB_TOKEN environme
     TMDB_TOKEN=... python3 scripts/fetch_streaming.py
 
 Gaps in TMDB's Iceland data are filled from the other Nordic countries (DK, NO, SE, FI):
-  - Disney+ and Apple TV+ have no Iceland listings on TMDB at all, and HBO Max and Crunchyroll
-    are clearly incomplete there. For these, a title counts if TMDB lists it on that service in
+  - Apple TV+ has no Iceland listings on TMDB at all, and HBO Max and Crunchyroll are clearly
+    incomplete there. For these, a title counts if TMDB lists it on that service in
     Iceland, or in at least 3 of the 4 Nordic countries. Titles only seen in the Nordics are
     marked (key "n") so the page can label them.
-  - Netflix, Prime Video and Viaplay catalogues differ by country, so they use Iceland data only.
+  - Netflix, Prime Video, Disney+ and Viaplay use Iceland data only (Disney+ by choice, even
+    though TMDB's Iceland listings for it are nearly empty).
   - Dropout is not a TMDB provider; its catalogue is the same worldwide, so it is built from
     TMDB's Dropout network (shows) and Dropout company (specials released since its 2018 launch).
 """
@@ -35,7 +36,7 @@ SERVICES = [
     ("netflix", "Netflix", 8, False),
     ("prime", "Prime Video", 119, False),
     ("hbo", "HBO Max", 1899, True),
-    ("disney", "Disney+", 337, True),
+    ("disney", "Disney+", 337, False),
     ("viaplay", "Viaplay", 76, False),
     ("apple", "Apple TV+", 350, True),
     ("crunchyroll", "Crunchyroll", 283, True),
