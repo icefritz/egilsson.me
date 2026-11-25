@@ -78,6 +78,17 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
 @media (max-width:560px){.wx-hours{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:14px}.wx-d{grid-template-columns:76px 22px 30px 1fr 30px 56px;gap:8px}.wx-dn{white-space:nowrap}.wx-d:nth-child(n+5){display:none}}
 @media (max-width:560px){.hero{padding-block:24px}.wx-hours{margin-top:14px;padding-top:12px}.wx-foot{margin-top:10px}}
 @media (max-width:560px) and (max-height:760px){.wx-h:nth-child(n+5){display:none}}
+.side{display:flex;flex-direction:column;gap:clamp(16px,3vw,24px);min-width:0}
+.moon{display:flex;align-items:center;gap:14px;max-width:720px;min-height:44px;font-size:13px;color:var(--muted)}
+.moon:empty{display:none}
+.moon-disc{flex:none;width:40px;height:40px;color:var(--fg2)}
+.moon-dark{fill:var(--surface2)}.moon-rim{stroke:var(--line);stroke-width:1}
+.moon-main{min-width:0}
+.moon-main b{display:block;font-family:var(--f-display);font-weight:600;font-size:clamp(15px,2.2vw,18px);color:var(--fg)}
+.moon-main small{display:block;font-size:13px}
+.moon-next{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right;white-space:nowrap}
+.moon-next em{font-style:normal;color:var(--fg2);font-weight:500}
+.moon-next i{font-style:normal;font-family:var(--f-mono)}
 .intro{display:flex;flex-direction:column;gap:clamp(16px,4vw,30px);min-width:0}
 @media (min-width:1000px){
   .page.home{max-width:1280px;padding-left:max(40px, env(safe-area-inset-left, 0px));padding-right:max(40px, env(safe-area-inset-right, 0px))}
@@ -85,7 +96,8 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
   .intro{display:contents}
   h1{grid-area:title}
   .wx{grid-area:wx;max-width:none}
-  nav{grid-area:nav;max-width:none}
+  .side{grid-area:nav}
+  nav,.moon{max-width:none}
   h1{font-size:clamp(72px,7.6vw,112px)}
 }
 </style>
@@ -97,13 +109,17 @@ nav small{display:block;font-size:13px;color:var(--muted);white-space:nowrap;ove
     <h1>Egilsson<button type="button" id="wx-dot" class="dot" aria-haspopup="menu" aria-expanded="false" aria-label="Choose weather location" title="Weather location">.</button></h1>
     </div>
     <section id="weather" class="wx" aria-label="Weather in Akureyri" aria-busy="true" aria-live="polite"><span class="wx-sub">Loading weather from vedur.is…</span></section>
+    <div class="side">
     <nav>
       <a href="utilities/"><div><b>Utilities</b><small>Search and Plex server</small></div><span class="go">→</span></a>
       <a href="checklist/"><div><b>Checklist</b><small>Night shift tasks</small></div><span class="go">→</span></a>
       <a href="streaming/"><div><b>Streaming</b><small>What's on in Iceland</small></div><span class="go">→</span></a>
     </nav>
+    <section id="moon" class="moon" aria-label="Moon phase"></section>
+    </div>
   </div>
 </main>
 <script src="assets/weather.js?v=7" defer></script>
+<script src="assets/moon.js?v=1" defer></script>
 </body>
 </html>
